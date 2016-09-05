@@ -1,0 +1,65 @@
+apply plugin: 'maven-publish'
+apply plugin: 'maven'
+apply plugin: 'idea'
+idea { module { downloadJavadoc = true; downloadSources = true; } }
+
+configurations {
+    deployerJar
+}
+dependencies {
+    deployerJar 'ar.com.synergian:wagon-git:0.2.5'
+}
+def BUILD = hasProperty("BUILD") ? getProperty("BUILD") : "";
+def publishUsername = System.getenv("publishUsername") ?: publishUsername;
+def publishPassword = System.getenv("publishPassword") ?: publishPassword;
+def releasesPublishUrl = System.getenv("releasesPublishUrl") ?: releasesPublishUrl;
+def snapshotsPublishUrl = System.getenv("snapshotsPublishUrl") ?: snapshotsPublishUrl;
+
+task publishArchives << {
+    def publishUrl;
+    def buildType;
+
+    println("-------------------------------------")
+    println("PUBLISH ARCHIVES TASK " + BUILD)
+    println("-------------------------------------")
+
+    if (BUILD != "") {
+        boolean b = false;
+        if (BUILD == "RELEASE") {
+            publishUrl = releasesPublishUrl;
+            buildType = "RELEASE"
+            b = true;
+        } else if (BUILD == "SNAPSHOT") {
+            publishUrl = snapshotsPublishUrl;
+            buildType = "SNAPSHOT"
+            b = true;
+        } else {
+            buildType = "ERROR"
+        }
+        println("BUILD : $buildType")
+        if (b) {
+            uploadArchives {
+                repositories.mavenDeployer {
+                    configuration = configurations.deployerJar;
+                    repository(url: publishUrl) {
+                        authentication(userName: publishUsername, password: publishPassword)
+                    }
+                }
+            }
+            uploadArchives.execute();
+        }
+    } else {
+        println("NOT UPLOADED")
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
+repositories {
+    maven { url 'https://raw.github.com/synergian/wagon-git/releases' }
+}
