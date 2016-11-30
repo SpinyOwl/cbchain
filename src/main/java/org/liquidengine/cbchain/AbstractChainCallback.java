@@ -9,8 +9,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * Created by Shcherbin Alexander on 6/7/2016.
  */
-public abstract class AbstractChainCallback<T extends CallbackI> implements ChainCallback<T> {
-    List<T> callbackChain = new CopyOnWriteArrayList<T>();
+public abstract class AbstractChainCallback<T extends CallbackI> implements IChainCallback<T> {
+    protected List<T> callbackChain = new CopyOnWriteArrayList<T>();
 
     public boolean isEmpty() {
         return callbackChain.isEmpty();

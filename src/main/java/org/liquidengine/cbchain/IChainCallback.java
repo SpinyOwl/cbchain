@@ -7,7 +7,7 @@ import java.util.Collection;
 /**
  * Created by Alexander on 01.12.2016.
  */
-public interface ChainCallback<T extends CallbackI> {
+public interface IChainCallback<T extends CallbackI> {
 
     boolean isEmpty();
 

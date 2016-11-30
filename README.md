@@ -12,7 +12,7 @@ package org.liquidengine.cbchain.example;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
-import org.liquidengine.cbchain.ChainKeyCallback;
+import org.liquidengine.cbchain.impl.ChainKeyCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
