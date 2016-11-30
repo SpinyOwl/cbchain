@@ -5,7 +5,7 @@ import org.lwjgl.glfw.GLFWMonitorCallbackI;
 /**
  * Created by Shcherbin Alexander on 6/8/2016.
  */
-public final class ChainMonitorCallback extends Chain<GLFWMonitorCallbackI> implements GLFWMonitorCallbackI{
+public final class ChainMonitorCallback extends AbstractChainCallback<GLFWMonitorCallbackI> implements GLFWMonitorCallbackI{
 
     @Override
     public void invoke(long monitor, int event) {

@@ -5,7 +5,7 @@ import org.lwjgl.glfw.GLFWCharModsCallbackI;
 /**
  * Created by Shcherbin Alexander on 6/8/2016.
  */
-public class ChainCharModsCallback extends Chain<GLFWCharModsCallbackI> implements GLFWCharModsCallbackI {
+public class ChainCharModsCallback extends AbstractChainCallback<GLFWCharModsCallbackI> implements GLFWCharModsCallbackI {
     @Override
     public void invoke(long window, int codepoint, int mods) {
         for (GLFWCharModsCallbackI glfwCharModsCallbackI : callbackChain) {

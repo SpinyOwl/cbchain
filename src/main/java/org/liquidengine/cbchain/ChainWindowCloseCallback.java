@@ -5,7 +5,7 @@ import org.lwjgl.glfw.GLFWWindowCloseCallbackI;
 /**
  * Created by Shcherbin Alexander on 6/8/2016.
  */
-public final class ChainWindowCloseCallback extends Chain<GLFWWindowCloseCallbackI> implements GLFWWindowCloseCallbackI{
+public final class ChainWindowCloseCallback extends AbstractChainCallback<GLFWWindowCloseCallbackI> implements GLFWWindowCloseCallbackI{
 
     @Override
     public void invoke(long window) {

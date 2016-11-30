@@ -2,7 +2,7 @@ package org.liquidengine.cbchain;
 
 import org.lwjgl.glfw.*;
 
-public final class ChainCursorEnterCallback extends Chain<GLFWCursorEnterCallbackI> implements GLFWCursorEnterCallbackI{
+public final class ChainCursorEnterCallback extends AbstractChainCallback<GLFWCursorEnterCallbackI> implements GLFWCursorEnterCallbackI{
 
     @Override
     public void invoke(long window, boolean entered) {

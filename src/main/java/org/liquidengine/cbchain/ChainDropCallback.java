@@ -5,7 +5,7 @@ import org.lwjgl.glfw.GLFWDropCallbackI;
 /**
  * Created by Shcherbin Alexander on 6/8/2016.
  */
-public final class ChainDropCallback extends Chain<GLFWDropCallbackI> implements GLFWDropCallbackI{
+public final class ChainDropCallback extends AbstractChainCallback<GLFWDropCallbackI> implements GLFWDropCallbackI{
 
     @Override
     public void invoke(long window, int count, long names) {

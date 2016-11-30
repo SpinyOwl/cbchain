@@ -5,7 +5,7 @@ import org.lwjgl.glfw.GLFWJoystickCallbackI;
 /**
  * Created by Shcherbin Alexander on 6/8/2016.
  */
-public final class ChainJoystickCallback extends Chain<GLFWJoystickCallbackI> implements GLFWJoystickCallbackI{
+public final class ChainJoystickCallback extends AbstractChainCallback<GLFWJoystickCallbackI> implements GLFWJoystickCallbackI{
 
     @Override
     public void invoke(int joy, int event) {
