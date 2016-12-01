@@ -2,10 +2,13 @@ package org.liquidengine.cbchain.impl;
 
 import org.liquidengine.cbchain.AbstractChainCallback;
 import org.liquidengine.cbchain.IChainCursorEnterCallback;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWCursorEnterCallbackI;
 
 /**
- * Created by Shcherbin Alexander on 6/8/2016.
+ * Chain callback implementation based on {@link AbstractChainCallback}.
+ * <p>
+ * Instances of this interface may be passed to the {@link GLFW#glfwSetCursorEnterCallback SetCursorEnterCallback} method.
  */
 public final class ChainCursorEnterCallback extends AbstractChainCallback<GLFWCursorEnterCallbackI> implements IChainCursorEnterCallback {
     @Override

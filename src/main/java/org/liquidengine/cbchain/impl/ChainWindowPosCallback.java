@@ -2,10 +2,13 @@ package org.liquidengine.cbchain.impl;
 
 import org.liquidengine.cbchain.AbstractChainCallback;
 import org.liquidengine.cbchain.IChainWindowPosCallback;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWWindowPosCallbackI;
 
 /**
- * Created by Shcherbin Alexander on 6/8/2016.
+ * Chain callback implementation based on {@link AbstractChainCallback}.
+ * <p>
+ * Instances of this interface may be passed to the {@link GLFW#glfwSetWindowPosCallback SetWindowPosCallback} method.
  */
 public final class ChainWindowPosCallback extends AbstractChainCallback<GLFWWindowPosCallbackI> implements IChainWindowPosCallback {
     @Override

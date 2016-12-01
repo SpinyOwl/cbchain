@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * Created by Shcherbin Alexander on 6/7/2016.
+ * Base implementation of {@link IChainCallback} based on {@link CopyOnWriteArrayList}
  */
 public abstract class AbstractChainCallback<T extends CallbackI> implements IChainCallback<T> {
     protected List<T> callbackChain = new CopyOnWriteArrayList<T>();

@@ -5,7 +5,9 @@ import org.lwjgl.system.CallbackI;
 import java.util.Collection;
 
 /**
- * Created by Alexander on 01.12.2016.
+ * Base interface for chain callbacks.
+ *
+ * @param <T> type of callback interface
  */
 public interface IChainCallback<T extends CallbackI> {
 
