@@ -10,11 +10,9 @@ import org.lwjgl.glfw.GLFWFramebufferSizeCallbackI;
  * <p>
  * Instances of this interface may be passed to the {@link GLFW#glfwSetFramebufferSizeCallback SetFramebufferSizeCallback} method.
  */
-public final class ChainFramebufferSizeCallback extends AbstractChainCallback<GLFWFramebufferSizeCallbackI> implements IChainFramebufferSizeCallback {
+public class ChainFramebufferSizeCallback extends AbstractChainCallback<GLFWFramebufferSizeCallbackI> implements IChainFramebufferSizeCallback {
     @Override
     public void invoke(long window, int width, int height) {
-        for (GLFWFramebufferSizeCallbackI glfwFramebufferSizeCallbackI : callbackChain) {
-            glfwFramebufferSizeCallbackI.invoke(window, width, height);
-        }
+        callbackChain.forEach(c -> c.invoke(window, width, height));
     }
 }

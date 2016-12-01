@@ -10,11 +10,9 @@ import org.lwjgl.glfw.GLFWMonitorCallbackI;
  * <p>
  * Instances of this interface may be passed to the {@link GLFW#glfwSetMonitorCallback SetMonitorCallback} method.
  */
-public final class ChainMonitorCallback extends AbstractChainCallback<GLFWMonitorCallbackI> implements IChainMonitorCallback {
+public class ChainMonitorCallback extends AbstractChainCallback<GLFWMonitorCallbackI> implements IChainMonitorCallback {
     @Override
     public void invoke(long monitor, int event) {
-        for (GLFWMonitorCallbackI glfwMonitorCallbackI : callbackChain) {
-            glfwMonitorCallbackI.invoke(monitor, event);
-        }
+        callbackChain.forEach(c -> c.invoke(monitor, event));
     }
 }

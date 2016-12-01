@@ -10,11 +10,9 @@ import org.lwjgl.glfw.GLFWKeyCallbackI;
  * <p>
  * Instances of this interface may be passed to the {@link GLFW#glfwSetKeyCallback SetKeyCallback} method.
  */
-public final class ChainKeyCallback extends AbstractChainCallback<GLFWKeyCallbackI> implements IChainKeyCallback {
+public class ChainKeyCallback extends AbstractChainCallback<GLFWKeyCallbackI> implements IChainKeyCallback {
     @Override
     public void invoke(long window, int key, int scancode, int action, int mods) {
-        for (GLFWKeyCallbackI glfwKeyCallbackI : callbackChain) {
-            glfwKeyCallbackI.invoke(window, key, scancode, action, mods);
-        }
+        callbackChain.forEach(c -> c.invoke(window, key, scancode, action, mods));
     }
 }

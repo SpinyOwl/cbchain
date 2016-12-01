@@ -10,11 +10,9 @@ import org.lwjgl.glfw.GLFWWindowPosCallbackI;
  * <p>
  * Instances of this interface may be passed to the {@link GLFW#glfwSetWindowPosCallback SetWindowPosCallback} method.
  */
-public final class ChainWindowPosCallback extends AbstractChainCallback<GLFWWindowPosCallbackI> implements IChainWindowPosCallback {
+public class ChainWindowPosCallback extends AbstractChainCallback<GLFWWindowPosCallbackI> implements IChainWindowPosCallback {
     @Override
     public void invoke(long window, int xpos, int ypos) {
-        for (GLFWWindowPosCallbackI glfwWindowPosCallbackI : callbackChain) {
-            glfwWindowPosCallbackI.invoke(window, xpos, ypos);
-        }
+        callbackChain.forEach(c -> c.invoke(window, xpos, ypos));
     }
 }

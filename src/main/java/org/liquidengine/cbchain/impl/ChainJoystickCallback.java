@@ -10,11 +10,9 @@ import org.lwjgl.glfw.GLFWJoystickCallbackI;
  * <p>
  * Instances of this interface may be passed to the {@link GLFW#glfwSetJoystickCallback SetJoystickCallback} method.
  */
-public final class ChainJoystickCallback extends AbstractChainCallback<GLFWJoystickCallbackI> implements IChainJoystickCallback {
+public class ChainJoystickCallback extends AbstractChainCallback<GLFWJoystickCallbackI> implements IChainJoystickCallback {
     @Override
     public void invoke(int joy, int event) {
-        for (GLFWJoystickCallbackI glfwJoystickCallbackI : callbackChain) {
-            glfwJoystickCallbackI.invoke(joy, event);
-        }
+        callbackChain.forEach(c -> c.invoke(joy, event));
     }
 }

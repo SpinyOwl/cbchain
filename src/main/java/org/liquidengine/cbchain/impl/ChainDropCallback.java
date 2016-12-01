@@ -10,11 +10,9 @@ import org.lwjgl.glfw.GLFWDropCallbackI;
  * <p>
  * Instances of this interface may be passed to the {@link GLFW#glfwSetDropCallback SetDropCallback} method.
  */
-public final class ChainDropCallback extends AbstractChainCallback<GLFWDropCallbackI> implements IChainDropCallback {
+public class ChainDropCallback extends AbstractChainCallback<GLFWDropCallbackI> implements IChainDropCallback {
     @Override
     public void invoke(long window, int count, long names) {
-        for (GLFWDropCallbackI glfwDropCallbackI : callbackChain) {
-            glfwDropCallbackI.invoke(window, count, names);
-        }
+        callbackChain.forEach(c -> c.invoke(window, count, names));
     }
 }

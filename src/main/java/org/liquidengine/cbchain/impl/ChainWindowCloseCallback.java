@@ -10,11 +10,9 @@ import org.lwjgl.glfw.GLFWWindowCloseCallbackI;
  * <p>
  * Instances of this interface may be passed to the {@link GLFW#glfwSetWindowCloseCallback SetWindowCloseCallback} method.
  */
-public final class ChainWindowCloseCallback extends AbstractChainCallback<GLFWWindowCloseCallbackI> implements IChainWindowCloseCallback {
+public class ChainWindowCloseCallback extends AbstractChainCallback<GLFWWindowCloseCallbackI> implements IChainWindowCloseCallback {
     @Override
     public void invoke(long window) {
-        for (GLFWWindowCloseCallbackI glfwWindowCloseCallbackI : callbackChain) {
-            glfwWindowCloseCallbackI.invoke(window);
-        }
+        callbackChain.forEach(c -> c.invoke(window));
     }
 }

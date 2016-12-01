@@ -10,11 +10,9 @@ import org.lwjgl.glfw.GLFWWindowRefreshCallbackI;
  * <p>
  * Instances of this interface may be passed to the {@link GLFW#glfwSetWindowRefreshCallback SetWindowRefreshCallback} method.
  */
-public final class ChainWindowRefreshCallback extends AbstractChainCallback<GLFWWindowRefreshCallbackI> implements IChainWindowRefreshCallback {
+public class ChainWindowRefreshCallback extends AbstractChainCallback<GLFWWindowRefreshCallbackI> implements IChainWindowRefreshCallback {
     @Override
     public void invoke(long window) {
-        for (GLFWWindowRefreshCallbackI glfwWindowRefreshCallbackI : callbackChain) {
-            glfwWindowRefreshCallbackI.invoke(window);
-        }
+        callbackChain.forEach(c -> c.invoke(window));
     }
 }

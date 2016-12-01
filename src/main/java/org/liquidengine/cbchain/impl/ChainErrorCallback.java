@@ -10,11 +10,9 @@ import org.lwjgl.glfw.GLFWErrorCallbackI;
  * <p>
  * Instances of this interface may be passed to the {@link GLFW#glfwSetErrorCallback SetErrorCallback} method.
  */
-public final class ChainErrorCallback extends AbstractChainCallback<GLFWErrorCallbackI> implements IChainErrorCallback {
+public class ChainErrorCallback extends AbstractChainCallback<GLFWErrorCallbackI> implements IChainErrorCallback {
     @Override
     public void invoke(int error, long description) {
-        for (GLFWErrorCallbackI glfwErrorCallbackI : callbackChain) {
-            glfwErrorCallbackI.invoke(error, description);
-        }
+        callbackChain.forEach(c -> c.invoke(error, description));
     }
 }

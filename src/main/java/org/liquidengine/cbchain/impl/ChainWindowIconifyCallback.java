@@ -10,11 +10,9 @@ import org.lwjgl.glfw.GLFWWindowIconifyCallbackI;
  * <p>
  * Instances of this interface may be passed to the {@link GLFW#glfwSetWindowIconifyCallback SetWindowIconifyCallback} method.
  */
-public final class ChainWindowIconifyCallback extends AbstractChainCallback<GLFWWindowIconifyCallbackI> implements IChainWindowIconifyCallback {
+public class ChainWindowIconifyCallback extends AbstractChainCallback<GLFWWindowIconifyCallbackI> implements IChainWindowIconifyCallback {
     @Override
     public void invoke(long window, boolean iconified) {
-        for (GLFWWindowIconifyCallbackI glfwWindowIconifyCallbackI : callbackChain) {
-            glfwWindowIconifyCallbackI.invoke(window, iconified);
-        }
+        callbackChain.forEach(c -> c.invoke(window, iconified));
     }
 }

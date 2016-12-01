@@ -10,10 +10,8 @@ import org.lwjgl.glfw.GLFWCursorPosCallbackI;
  * <p>
  * Instances of this interface may be passed to the {@link GLFW#glfwSetCursorPosCallback SetCursorPosCallback} method.
  */
-public final class ChainCursorPosCallback extends AbstractChainCallback<GLFWCursorPosCallbackI> implements IChainCursorPosCallback {
+public class ChainCursorPosCallback extends AbstractChainCallback<GLFWCursorPosCallbackI> implements IChainCursorPosCallback {
     public void invoke(long window, double xpos, double ypos) {
-        for (GLFWCursorPosCallbackI glfwCursorPosCallbackI : callbackChain) {
-            glfwCursorPosCallbackI.invoke(window, xpos, ypos);
-        }
+        callbackChain.forEach(c -> c.invoke(window, xpos, ypos));
     }
 }

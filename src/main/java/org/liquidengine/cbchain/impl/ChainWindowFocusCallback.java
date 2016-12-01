@@ -10,11 +10,9 @@ import org.lwjgl.glfw.GLFWWindowFocusCallbackI;
  * <p>
  * Instances of this interface may be passed to the {@link GLFW#glfwSetWindowFocusCallback SetWindowFocusCallback} method.
  */
-public final class ChainWindowFocusCallback extends AbstractChainCallback<GLFWWindowFocusCallbackI> implements IChainWindowFocusCallback {
+public class ChainWindowFocusCallback extends AbstractChainCallback<GLFWWindowFocusCallbackI> implements IChainWindowFocusCallback {
     @Override
     public void invoke(long window, boolean focused) {
-        for (GLFWWindowFocusCallbackI glfwWindowFocusCallbackI : callbackChain) {
-            glfwWindowFocusCallbackI.invoke(window, focused);
-        }
+        callbackChain.forEach(c -> c.invoke(window, focused));
     }
 }

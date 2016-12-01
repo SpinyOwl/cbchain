@@ -10,11 +10,9 @@ import org.lwjgl.glfw.GLFWCursorEnterCallbackI;
  * <p>
  * Instances of this interface may be passed to the {@link GLFW#glfwSetCursorEnterCallback SetCursorEnterCallback} method.
  */
-public final class ChainCursorEnterCallback extends AbstractChainCallback<GLFWCursorEnterCallbackI> implements IChainCursorEnterCallback {
+public class ChainCursorEnterCallback extends AbstractChainCallback<GLFWCursorEnterCallbackI> implements IChainCursorEnterCallback {
     @Override
     public void invoke(long window, boolean entered) {
-        for (GLFWCursorEnterCallbackI glfwCursorEnterCallbackI : callbackChain) {
-            glfwCursorEnterCallbackI.invoke(window, entered);
-        }
+        callbackChain.forEach(c -> c.invoke(window, entered));
     }
 }

@@ -10,11 +10,9 @@ import org.lwjgl.glfw.GLFWCharCallbackI;
  * <p>
  * Instances of this interface may be passed to the {@link GLFW#glfwSetCharCallback SetCharCallback} method.
  */
-public final class ChainCharCallback extends AbstractChainCallback<GLFWCharCallbackI> implements IChainCharCallback {
+public class ChainCharCallback extends AbstractChainCallback<GLFWCharCallbackI> implements IChainCharCallback {
     @Override
     public void invoke(long window, int codepoint) {
-        for (GLFWCharCallbackI glfwKeyCallbackI : callbackChain) {
-            glfwKeyCallbackI.invoke(window, codepoint);
-        }
+        callbackChain.forEach(c -> c.invoke(window, codepoint));
     }
 }

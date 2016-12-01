@@ -10,11 +10,9 @@ import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
  * <p>
  * Instances of this interface may be passed to the {@link GLFW#glfwSetMouseButtonCallback SetMouseButtonCallback} method.
  */
-public final class ChainMouseButtonCallback extends AbstractChainCallback<GLFWMouseButtonCallbackI> implements IChainMouseButtonCallback {
+public class ChainMouseButtonCallback extends AbstractChainCallback<GLFWMouseButtonCallbackI> implements IChainMouseButtonCallback {
     @Override
     public void invoke(long window, int button, int action, int mods) {
-        for (GLFWMouseButtonCallbackI glfwMouseButtonCallbackI : callbackChain) {
-            glfwMouseButtonCallbackI.invoke(window, button, action, mods);
-        }
+        callbackChain.forEach(c -> c.invoke(window, button, action, mods));
     }
 }

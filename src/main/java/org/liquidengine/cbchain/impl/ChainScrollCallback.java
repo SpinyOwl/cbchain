@@ -10,11 +10,9 @@ import org.lwjgl.glfw.GLFWScrollCallbackI;
  * <p>
  * Instances of this interface may be passed to the {@link GLFW#glfwSetScrollCallback SetScrollCallback} method.
  */
-public final class ChainScrollCallback extends AbstractChainCallback<GLFWScrollCallbackI> implements IChainScrollCallback {
+public class ChainScrollCallback extends AbstractChainCallback<GLFWScrollCallbackI> implements IChainScrollCallback {
     @Override
     public void invoke(long window, double xoffset, double yoffset) {
-        for (GLFWScrollCallbackI glfwScrollCallbackI : callbackChain) {
-            glfwScrollCallbackI.invoke(window, xoffset, yoffset);
-        }
+        callbackChain.forEach(c -> c.invoke(window, xoffset, yoffset));
     }
 }

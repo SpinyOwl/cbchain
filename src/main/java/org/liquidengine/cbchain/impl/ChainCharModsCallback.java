@@ -13,8 +13,6 @@ import org.lwjgl.glfw.GLFWCharModsCallbackI;
 public class ChainCharModsCallback extends AbstractChainCallback<GLFWCharModsCallbackI> implements IChainCharModsCallback {
     @Override
     public void invoke(long window, int codepoint, int mods) {
-        for (GLFWCharModsCallbackI glfwCharModsCallbackI : callbackChain) {
-            glfwCharModsCallbackI.invoke(window, codepoint, mods);
-        }
+        callbackChain.forEach(c -> c.invoke(window, codepoint, mods));
     }
 }
