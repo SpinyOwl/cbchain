@@ -69,8 +69,6 @@ public interface IChainCallback<T extends CallbackI> {
 
     /**
      * Removes all callbacks from the chain.
-     *
-     * @return <tt>true</tt> if callbacks are removed
      */
     void clear();
     
