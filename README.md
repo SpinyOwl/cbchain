@@ -4,7 +4,10 @@ Chain callbacks for LWJGL3
 
 Current version you can find in [version.properties](version.properties)
 
-Example
+## ABOUT
+Cahin callback is callback that keep another callbacks and invoke them sequently when receives event. 
+
+## Example
 -------
 
 ```java
