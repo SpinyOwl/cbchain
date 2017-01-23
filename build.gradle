@@ -13,11 +13,8 @@ configurations.all {
     resolutionStrategy.cacheChangingModulesFor 10, 'seconds'
 }
 
-def lwjgl_version = '3.1.1-SNAPSHOT'
-def joml_version = "1.9.1-SNAPSHOT"
+def lwjgl_version = '3.1.2-SNAPSHOT'
 def log4j_version = '2.3'
-def commons_version = '3.4'
-def commons_collections = '4.1'
 def junit_version = '4.12'
 
 repositories {
@@ -31,11 +28,7 @@ repositories {
 }
 
 dependencies {
-
-    compile group: "org.joml", name: "joml", version: joml_version, changing: true
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: log4j_version
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: commons_version
-    compile group: 'org.apache.commons', name: 'commons-collections4', version: commons_collections
 
     compile group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true
     runtime group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true, classifier: 'natives-windows'
