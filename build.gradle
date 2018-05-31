@@ -1,17 +1,28 @@
 group 'org.liquidengine'
 
-apply plugin: 'java'
-apply plugin: 'maven-publish'
-apply plugin: 'maven'
-apply plugin: 'idea'
-idea { module { downloadJavadoc = true; downloadSources = true } }
+import groovy.json.JsonSlurper
 
-Properties up = new Properties(); up.load(new FileInputStream("version.properties")); properties.putAll(up)
-version up.getProperty("liquidengine.cbchain.version")
+// SETUP VERSION
+def versionJson = new JsonSlurper().parseText(new File("$project.projectDir/version.json").text)
+def versionExt = System.getProperty("VEXT") ?: System.getenv("VEXT") ?: ""
+project.version = versionJson.version + (versionExt == "" ? "" : "-" + versionExt)
+
+println("VERSION : " + project.version)
 
 configurations.all {
-    resolutionStrategy.cacheChangingModulesFor 10, 'seconds'
+    resolutionStrategy.cacheChangingModulesFor(0, 'seconds')
 }
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+idea { module { downloadJavadoc = true; downloadSources = true } }
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+compileJava.options.encoding = 'UTF-8'
 
 def lwjgl_version = '3.1.2-SNAPSHOT'
 def log4j_version = '2.3'
@@ -20,10 +31,6 @@ def junit_version = '4.12'
 repositories {
     jcenter()
     mavenCentral()
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-}
-
-repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
@@ -44,7 +51,6 @@ dependencies {
 }
 
 // PUBLISH SECTION
-
 configurations {
     deployerJar
 }
@@ -55,48 +61,28 @@ dependencies {
     deployerJar 'ar.com.synergian:wagon-git:0.2.5'
 }
 
-project.sourceCompatibility = 1.8
-project.targetCompatibility = 1.8
-compileJava.options.encoding = 'UTF-8'
+task publishArchives {
+    doLast {
+        def publishUrl = System.getProperty("publishUrl") ?: System.getenv("publishUrl") ?: publishUrl
+        def publishUsername = System.getProperty("publishUsername") ?: System.getenv("publishUsername") ?: publishUsername
+        def publishPassword = System.getProperty("publishPassword") ?: System.getenv("publishPassword") ?: publishPassword
 
-def build_type = System.getProperty("build_type") ?: (System.getenv("build_type") ?: "")
-if (build_type == "SNAPSHOT") {
-    project.version += "-SNAPSHOT"
-}
-
-task publishArchives << {
-    def publishUrl
-    def buildType
-    def publishUsername = System.getenv("publishUsername") ?: publishUsername
-    def publishPassword = System.getenv("publishPassword") ?: publishPassword
-    def releasesPublishUrl = System.getenv("releasesPublishUrl") ?: releasesPublishUrl
-    def snapshotsPublishUrl = System.getenv("snapshotsPublishUrl") ?: snapshotsPublishUrl
-    println("-------------------------------------")
-    println("PUBLISH ARCHIVES TASK " + build_type)
-    println("-------------------------------------")
-    if (build_type != "") {
-        boolean b = false; buildType = "ERROR"
-        if (build_type == "RELEASE") {
-            publishUrl = releasesPublishUrl; buildType = "RELEASE"; b = true
-        }
-        if (build_type == "SNAPSHOT") {
-            publishUrl = snapshotsPublishUrl; buildType = "SNAPSHOT"; b = true
-        }
-        println("build_type : $buildType; PUBLISHED TO $publishUrl")
-        if (b) {
-            uploadArchives {
-                repositories.mavenDeployer {
-                    configuration = configurations.deployerJar
-                    repository(url: publishUrl) {
-                        authentication(userName: publishUsername, password: publishPassword)
-                    }
+        println("PUBLISHING TO $publishUrl")
+        uploadArchives {
+            repositories.mavenDeployer {
+                configuration = configurations.deployerJar
+                repository(url: publishUrl) {
+                    authentication(userName: publishUsername, password: publishPassword)
                 }
             }
-            uploadArchives.execute()
         }
-    } else {
-        println("NOT UPLOADED")
+        uploadArchives.execute()
+        println("PUBLISHED TO  $publishUrl")
     }
+}
+
+jar {
+    exclude("org/liquidengine/legui/demo/**")
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
