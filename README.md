@@ -7,7 +7,45 @@ Current version you can find in [version.properties](version.properties)
 ## ABOUT
 Cahin callback is callback that keep another callbacks and invoke them sequently when receives event. 
 
-## Example
+## How to add
+### Add repository
+#### Maven
+```xml
+<repositories>
+    <repository>
+      <id>SpinyOwl-releases</id>
+      <url>https://raw.githubusercontent.com/SpinyOwl/repo/releases</url>
+      <releases><enabled>true</enabled></releases>
+      <snapshots><enabled>false</enabled></snapshots>
+    </repository>
+</repositories>
+```
+#### Gradle
+```groovy
+repositories {
+    maven { url "https://raw.githubusercontent.com/SpinyOwl/repo/releases" }
+}
+```
+### Add dependency
+#### Maven
+```xml
+<!-- CBCHAIN - RELEASE - https://github.com/SpinyOwl/cbchain -->
+<dependencies>
+    <dependency>
+       <groupId>org.liquidengine</groupId>
+        <artifactId>cbchain</artifactId>
+        <version>1.0.0</version>
+    </dependency>
+</dependencies>
+ ```
+#### Gradle
+  ```groovy
+// CBCHAIN - RELEASE - https://github.com/SpinyOwl/cbchain
+compile group: 'org.liquidengine', name: 'cbchain', version: '1.0.0';
+  ```
+
+
+## Usage example
 -------
 
 ```java
