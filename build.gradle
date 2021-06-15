@@ -1,107 +1,94 @@
-group 'org.liquidengine'
+plugins {
+    id 'java-library'
+    id 'net.nemerosa.versioning' version '2.6.1'
+    id 'maven-publish'
+}
 
-import groovy.json.JsonSlurper
+group 'com.spinyowl'
 
-// SETUP VERSION
-def versionJson = new JsonSlurper().parseText(new File("$project.projectDir/version.json").text)
-def versionExt = System.getProperty("VEXT") ?: System.getenv("VEXT") ?: ""
-project.version = versionJson.version + (versionExt == "" ? "" : "-" + versionExt)
+import java.text.SimpleDateFormat
 
-println("VERSION : " + project.version)
+printProjectInfo()
+
+private void printProjectInfo() {
+    println "##################################################"
+    println "# Project info:                                  #"
+    println sprintf("#     group:    %-33s#", project.group)
+    println sprintf("#     name:     %-33s#", project.name)
+    println sprintf("#     version:  %-33s#", project.version)
+    println "##################################################"
+}
+
+def mavenLocalRepo = new File(project.buildDir.path, 'publish').toURI().toURL()
+println mavenLocalRepo
 
 configurations.all {
     resolutionStrategy.cacheChangingModulesFor(0, 'seconds')
 }
 
-apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
+
 idea { module { downloadJavadoc = true; downloadSources = true } }
+sourceCompatibility = 16
+targetCompatibility = 16
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+javadoc.options.encoding = 'UTF-8'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-compileJava.options.encoding = 'UTF-8'
-
-def lwjgl_version = '3.1.2-SNAPSHOT'
-def log4j_version = '2.3'
-def junit_version = '4.12'
+java {
+    withJavadocJar()
+    withSourcesJar()
+    modularity.inferModulePath = true
+}
 
 repositories {
-    jcenter()
     mavenCentral()
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
 dependencies {
-    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: log4j_version
+    api group: 'org.apache.logging.log4j', name: 'log4j-core', version: log4j_version
 
-    compile group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true
-    runtime group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true, classifier: 'natives-windows'
-    runtime group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true, classifier: 'natives-linux'
-    runtime group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true, classifier: 'natives-macos'
+    api group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true
+    api group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true, classifier: 'natives-windows'
+    api group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true, classifier: 'natives-linux'
+    api group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true, classifier: 'natives-macos'
 
-    compile group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, changing: true
-    compile group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, classifier: 'natives-windows', changing: true
-    compile group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, classifier: 'natives-linux', changing: true
-    compile group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, classifier: 'natives-macos', changing: true
+    api group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, changing: true
+    api group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, classifier: 'natives-windows', changing: true
+    api group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, classifier: 'natives-linux', changing: true
+    api group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, classifier: 'natives-macos', changing: true
 
-    testCompile group: 'junit', name: 'junit', version: junit_version
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.7.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.1'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 // PUBLISH SECTION
-configurations {
-    deployerJar
-}
-repositories {
-    maven { url 'https://raw.github.com/synergian/wagon-git/releases' }
-}
-dependencies {
-    deployerJar 'ar.com.synergian:wagon-git:0.2.5'
-}
-
-task publishArchives {
-    doLast {
-        def publishUrl = System.getProperty("publishUrl") ?: System.getenv("publishUrl") ?: publishUrl
-        def publishUsername = System.getProperty("publishUsername") ?: System.getenv("publishUsername") ?: publishUsername
-        def publishPassword = System.getProperty("publishPassword") ?: System.getenv("publishPassword") ?: publishPassword
-
-        println("PUBLISHING TO $publishUrl")
-        uploadArchives {
-            repositories.mavenDeployer {
-                configuration = configurations.deployerJar
-                repository(url: publishUrl) {
-                    authentication(userName: publishUsername, password: publishPassword)
-                }
-            }
-        }
-        uploadArchives.execute()
-        println("PUBLISHED TO  $publishUrl")
-    }
-}
-
 jar {
-    exclude("org/liquidengine/legui/demo/**")
+    manifest.attributes(
+            'Build-Timestamp': new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
+            'Build-Revision': versioning.info.commit,
+            'Created-By': "Gradle ${gradle.gradleVersion}",
+            'Build-Jdk': "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
+            'Build-OS': "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}",
+            'Full-Version': project.version
+    )
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-    dependsOn classes
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-javadocJar.dependsOn javadoc
-publishArchives.dependsOn jar
-publishArchives.dependsOn sourcesJar
-publishArchives.dependsOn javadocJar
-
-artifacts {
-    archives sourcesJar
-    archives javadocJar
+publishing {
+    repositories {
+        maven {
+            url mavenLocalRepo
+        }
+    }
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
 }

@@ -1,8 +1,10 @@
+![REPO SIZE](https://img.shields.io/github/repo-size/SpinyOwl/cbchain.svg)
+![CODE SIZE](https://img.shields.io/github/languages/code-size/SpinyOwl/cbchain.svg)
+[![License](https://img.shields.io/github/license/SpinyOwl/cbchain.svg)](/LICENSE)
+
 # CBCHAIN (Callback Chain for LWJGL3)
 
 Chain callbacks for LWJGL3
-
-Current version you can find in [version.properties](version.properties)
 
 ## ABOUT
 Cahin callback is callback that keep another callbacks and invoke them sequently when receives event. 
@@ -53,7 +55,7 @@ package org.liquidengine.cbchain.example;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
-import org.liquidengine.cbchain.impl.ChainKeyCallback;
+import ChainKeyCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
