@@ -27,7 +27,7 @@ jobs:
         uses: seanmiddleditch/gha-publish-to-git@v2
         with:
           repository: SpinyOwl/repo
-          branch: test
+          branch: releases
           github_token: '${{ secrets.GITHUB_TOKEN  }}'
           github_pat: '${{ secrets.GH_PAT }}'
           source_folder: build/publish
