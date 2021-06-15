@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [ releases ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # CHECKOUT
+      - uses: actions/checkout@v2
+
+      # PREPARE
+      - name: Setup Java JDK
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 16
+
+      - name: Set environment variables
+        run: |
+          echo "version=${{steps.extract_version.outputs.prop}}" >> $GITHUB_ENV
+          echo "repoUrl=https://github.com/SpinyOwl/repo/tree/releases/org/liquidengine/legui" >> $GITHUB_ENV
+
+      # BUILD
+      - name: Build with Gradle
+        run: ./gradlew clean build publish
+
+      - name: publish-to-git
+        uses: seanmiddleditch/gha-publish-to-git@v2
+        with:
+          repository: repo
+          branch: test
+          github_token: '${{ secrets.GITHUB_TOKEN  }}'
+          github_pat: '${{ secrets.GH_PAT }}'
+          source_folder: build/publish
