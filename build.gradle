@@ -47,8 +47,6 @@ repositories {
 }
 
 dependencies {
-    api group: 'org.apache.logging.log4j', name: 'log4j-core', version: log4j_version
-
     api group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true
     api group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true, classifier: 'natives-windows'
     api group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true, classifier: 'natives-linux'
