@@ -26,7 +26,7 @@ jobs:
       - name: publish-to-git
         uses: seanmiddleditch/gha-publish-to-git@v2
         with:
-          repository: repo
+          repository: SpinyOwl/repo
           branch: test
           github_token: '${{ secrets.GITHUB_TOKEN  }}'
           github_pat: '${{ secrets.GH_PAT }}'
