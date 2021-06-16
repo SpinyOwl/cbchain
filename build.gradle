@@ -28,8 +28,8 @@ apply plugin: 'idea'
 apply plugin: 'eclipse'
 
 idea { module { downloadJavadoc = true; downloadSources = true } }
-sourceCompatibility = 16
-targetCompatibility = 16
+sourceCompatibility = 11
+targetCompatibility = 11
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
 javadoc.options.encoding = 'UTF-8'
