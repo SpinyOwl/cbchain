@@ -19,8 +19,6 @@ private void printProjectInfo() {
     println "##################################################"
 }
 
-def mavenLocalRepo = new File(project.buildDir.path, 'publish').toURI().toURL()
-println mavenLocalRepo
 
 configurations.all {
     resolutionStrategy.cacheChangingModulesFor(0, 'seconds')
@@ -78,6 +76,7 @@ jar {
     )
 }
 
+def mavenLocalRepo = new File(project.buildDir.path, 'publish').toURI().toURL()
 publishing {
     repositories {
         maven {

@@ -31,4 +31,4 @@ jobs:
           github_token: '${{ secrets.GITHUB_TOKEN  }}'
           github_pat: '${{ secrets.GH_PAT }}'
           source_folder: build/publish
-          no_delete: true
+          no_delete: 'true'
