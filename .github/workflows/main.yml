@@ -23,11 +23,12 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew clean build publish
 
-      - name: publish-to-git
-        uses: seanmiddleditch/gha-publish-to-git@v2
+      - name: Publish Artifact to GIT
+        uses: SpinyOwl/publish-artifact-to-git@1.0.0
         with:
           repository: SpinyOwl/repo
           branch: releases
           github_token: '${{ secrets.GITHUB_TOKEN  }}'
           github_pat: '${{ secrets.GH_PAT }}'
           source_folder: build/publish
+          no_delete: true
