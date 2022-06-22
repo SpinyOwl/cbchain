@@ -28,8 +28,10 @@ apply plugin: 'idea'
 apply plugin: 'eclipse'
 
 idea { module { downloadJavadoc = true; downloadSources = true } }
-sourceCompatibility = 11
-targetCompatibility = 11
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
 javadoc.options.encoding = 'UTF-8'
@@ -55,9 +57,9 @@ dependencies {
     api group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, classifier: 'natives-linux', changing: true
     api group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, classifier: 'natives-macos', changing: true
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
-    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.7.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
 }
 
 test {
@@ -80,7 +82,8 @@ def mavenLocalRepo = new File(project.buildDir.path, 'publish').toURI().toURL()
 publishing {
     repositories {
         maven {
-            url mavenLocalRepo
+            name = "Local"
+            url = mavenLocalRepo
         }
     }
     publications {
