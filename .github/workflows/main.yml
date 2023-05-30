@@ -3,19 +3,20 @@ name: CI
 on:
   push:
     branches:
-      - releases
+      - develop
 
 jobs:
   build:
     name: Build CBCHAIN
     runs-on: ubuntu-latest
     steps:
+
       # CHECKOUT
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       # PREPARE
-      - name: Setup Java JDK
-        uses: actions/setup-java@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3.10.0
         with:
           java-version: 11
           distribution: 'adopt'
