@@ -1,0 +1,78 @@
+name: Stage Maven Central release
+
+on:
+  workflow_call:
+    secrets:
+      MAVEN_CENTRAL_USERNAME:
+        required: true
+      MAVEN_CENTRAL_PASSWORD:
+        required: true
+      SIGNING_KEY:
+        required: true
+      SIGNING_PASSWORD:
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cbchain-maven-central
+  cancel-in-progress: false
+
+jobs:
+  stage:
+    name: Stage signed artifacts in Central Portal
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up JDK
+        uses: actions/setup-java@v6
+        with:
+          java-version: '17'
+          distribution: temurin
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-provider: basic
+          cache-read-only: true
+
+      - name: Verify release version
+        run: |
+          current_version=''
+          while IFS='=' read -r property value; do
+            if [[ "$property" == version ]]; then
+              current_version="${value%$'\r'}"
+              break
+            fi
+          done < gradle.properties
+          if [[ -z "$current_version" || "$current_version" == *-SNAPSHOT ]]; then
+            echo '::error::Set a non-SNAPSHOT release version in gradle.properties.'
+            exit 1
+          fi
+          echo "Preparing Maven Central deployment for version ${current_version}."
+
+      - name: Build, sign and upload deployment
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_PASSWORD }}
+        run: |
+          for required in ORG_GRADLE_PROJECT_mavenCentralUsername ORG_GRADLE_PROJECT_mavenCentralPassword ORG_GRADLE_PROJECT_signingInMemoryKey; do
+            if [[ -z "${!required}" ]]; then
+              echo "::error::Missing publishing secret for ${required}."
+              exit 1
+            fi
+          done
+          ./gradlew clean build publishToMavenCentral -PcentralPublishing=true --warning-mode fail --console=plain
+
+      - name: Report staged deployment
+        run: |
+          echo 'Deployment uploaded. Review validation and select Publish at https://central.sonatype.com/publishing/deployments.' >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,51 @@
+name: Publish to GitHub repository
+
+on:
+  workflow_call:
+    secrets:
+      GH_PAT:
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cbchain-github-publication
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish Maven artifacts to SpinyOwl/repo
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up JDK
+        uses: actions/setup-java@v6
+        with:
+          java-version: '17'
+          distribution: temurin
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-provider: basic
+          cache-read-only: true
+
+      - name: Build and prepare Maven artifacts
+        run: ./gradlew clean build publishAllPublicationsToLocalArtifactsRepository --warning-mode fail --console=plain
+
+      - name: Publish Maven artifacts
+        uses: SpinyOwl/publish-artifact-to-git@2.0.0
+        with:
+          repository: SpinyOwl/repo
+          branch: releases
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_pat: ${{ secrets.GH_PAT }}
+          source_folder: build/publish
+          no_delete: 'true'

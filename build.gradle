@@ -1,10 +1,10 @@
 plugins {
     id 'java-library'
-    id 'net.nemerosa.versioning' version '3.0.0'
     id 'maven-publish'
+    id 'com.vanniktech.maven.publish.base' version '0.37.0'
 }
 
-group 'com.spinyowl'
+group = 'com.spinyowl'
 
 import java.text.SimpleDateFormat
 
@@ -47,22 +47,26 @@ repositories {
 }
 
 dependencies {
-    api group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true
-    api group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true, classifier: 'natives-windows'
-    api group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true, classifier: 'natives-linux'
-    api group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true, classifier: 'natives-macos'
+    api("org.lwjgl:lwjgl:${lwjgl_version}") { changing = true }
+    api("org.lwjgl:lwjgl:${lwjgl_version}:natives-windows") { changing = true }
+    api("org.lwjgl:lwjgl:${lwjgl_version}:natives-linux") { changing = true }
+    api("org.lwjgl:lwjgl:${lwjgl_version}:natives-macos") { changing = true }
 
-    api group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, changing: true
-    api group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, classifier: 'natives-windows', changing: true
-    api group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, classifier: 'natives-linux', changing: true
-    api group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, classifier: 'natives-macos', changing: true
+    api("org.lwjgl:lwjgl-glfw:${lwjgl_version}") { changing = true }
+    api("org.lwjgl:lwjgl-glfw:${lwjgl_version}:natives-windows") { changing = true }
+    api("org.lwjgl:lwjgl-glfw:${lwjgl_version}:natives-linux") { changing = true }
+    api("org.lwjgl:lwjgl-glfw:${lwjgl_version}:natives-macos") { changing = true }
 }
 
 // PUBLISH SECTION
+def buildRevision = providers.exec {
+    commandLine 'git', 'rev-parse', 'HEAD'
+}.standardOutput.asText.map { it.trim() }
+
 jar {
     manifest.attributes(
             'Build-Timestamp': new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
-            'Build-Revision': versioning.info.commit,
+            'Build-Revision': buildRevision,
             'Created-By': "Gradle ${gradle.gradleVersion}",
             'Build-Jdk': "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
             'Build-OS': "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}",
@@ -70,16 +74,49 @@ jar {
     )
 }
 
-def mavenLocalRepo = new File(project.buildDir.path, 'publish').toURI().toURL()
 publishing {
     repositories {
         maven {
-            url mavenLocalRepo
+            name = 'localArtifacts'
+            url = layout.buildDirectory.dir('publish')
         }
     }
     publications {
         mavenJava(MavenPublication) {
             from components.java
+            pom {
+                name = 'CBCHAIN'
+                description = 'Composable GLFW callback chains for LWJGL 3.'
+                url = 'https://github.com/SpinyOwl/cbchain'
+                inceptionYear = '2019'
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://opensource.org/license/mit/'
+                        distribution = 'repo'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'SpinyOwl'
+                        name = 'Spiny Owl'
+                        url = 'https://github.com/SpinyOwl'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:https://github.com/SpinyOwl/cbchain.git'
+                    developerConnection = 'scm:git:ssh://git@github.com/SpinyOwl/cbchain.git'
+                    url = 'https://github.com/SpinyOwl/cbchain'
+                }
+            }
         }
+    }
+}
+
+// Explicit release commands enable Central publishing and mandatory GPG signing.
+if (providers.gradleProperty('centralPublishing').map { it.toBoolean() }.getOrElse(false)) {
+    mavenPublishing {
+        publishToMavenCentral(false)
+        signAllPublications()
     }
 }

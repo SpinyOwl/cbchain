@@ -19,6 +19,9 @@ Requires JDK 17. Set `JAVA_HOME` to your JDK 17 installation, then run:
 
 On Windows, use `gradlew.bat clean build`.
 
+See [publishing instructions](docs/publishing.md) for local Maven artifacts,
+Sonatype Central Portal credentials, GPG signing and the manual release workflow.
+
 ## How to add
 ### Add repository
 #### Maven
@@ -44,16 +47,16 @@ repositories {
 <!-- CBCHAIN - RELEASE - https://github.com/SpinyOwl/cbchain -->
 <dependencies>
     <dependency>
-       <groupId>org.liquidengine</groupId>
+       <groupId>com.spinyowl</groupId>
         <artifactId>cbchain</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.3</version>
     </dependency>
 </dependencies>
  ```
 #### Gradle
   ```groovy
 // CBCHAIN - RELEASE - https://github.com/SpinyOwl/cbchain
-compile group: 'org.liquidengine', name: 'cbchain', version: '1.0.0';
+implementation 'com.spinyowl:cbchain:1.0.3'
   ```
 
 

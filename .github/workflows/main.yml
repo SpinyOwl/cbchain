@@ -4,39 +4,65 @@ on:
   push:
     branches:
       - develop
+  pull_request:
+    branches:
+      - develop
+  workflow_dispatch:
+    inputs:
+      publish_github:
+        description: Publish artifacts to SpinyOwl/repo
+        type: boolean
+        default: false
+      publish_sonatype:
+        description: Upload signed deployment to Sonatype Central Portal
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
 
 jobs:
   build:
     name: Build CBCHAIN
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
+      - name: Checkout sources
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
 
-      # CHECKOUT
-      - uses: actions/checkout@v3
-
-      # PREPARE
       - name: Set up JDK
-        uses: actions/setup-java@v3.11.0
+        uses: actions/setup-java@v6
         with:
-          java-version: 17
-          distribution: 'adopt'
-          cache: 'gradle'
+          java-version: '17'
+          distribution: temurin
 
-      # BUILD
-      - name: Build with Gradle
-        run: ./gradlew clean build
-
-      # PUBLISH
-      - name: Build artifacts
-        run: ./gradlew publish
-
-      - name: Publish Artifact to GIT REPO
-        uses: SpinyOwl/publish-artifact-to-git@1.0.1
-        if: "!contains(github.event.head_commit.message, '[skip publish]')"
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
         with:
-          repository: SpinyOwl/repo
-          branch: releases
-          github_token: '${{ secrets.GITHUB_TOKEN }}'
-          github_pat: '${{ secrets.GH_PAT }}'
-          source_folder: build/publish
-          no_delete: true
+          cache-provider: basic
+          cache-read-only: ${{ github.event_name != 'push' || github.ref != 'refs/heads/develop' }}
+
+      - name: Build
+        run: ./gradlew clean build --warning-mode fail --console=plain
+
+  publish-github:
+    name: Publish to GitHub repository
+    if: >-
+      (github.event_name == 'workflow_dispatch' && inputs.publish_github) ||
+      (github.event_name == 'push' && github.ref == 'refs/heads/develop' && !contains(github.event.head_commit.message, '[skip publish]'))
+    uses: ./.github/workflows/publish-github.yml
+    secrets:
+      GH_PAT: ${{ secrets.GH_PAT }}
+
+  publish-sonatype:
+    name: Stage Maven Central release
+    if: github.event_name == 'workflow_dispatch' && inputs.publish_sonatype
+    uses: ./.github/workflows/publish-central.yml
+    secrets:
+      MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+      MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+      SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+      SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
