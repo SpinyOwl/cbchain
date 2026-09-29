@@ -9,6 +9,16 @@ Chain callbacks for LWJGL3
 ## ABOUT
 Cahin callback is callback that keep another callbacks and invoke them sequently when receives event. 
 
+## Build
+
+Requires JDK 17. Set `JAVA_HOME` to your JDK 17 installation, then run:
+
+```sh
+./gradlew clean build
+```
+
+On Windows, use `gradlew.bat clean build`.
+
 ## How to add
 ### Add repository
 #### Maven

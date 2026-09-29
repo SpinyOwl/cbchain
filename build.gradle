@@ -28,13 +28,15 @@ apply plugin: 'idea'
 apply plugin: 'eclipse'
 
 idea { module { downloadJavadoc = true; downloadSources = true } }
-sourceCompatibility = 11
-targetCompatibility = 11
+
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
 javadoc.options.encoding = 'UTF-8'
 
 java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
     withJavadocJar()
     withSourcesJar()
     modularity.inferModulePath = true
